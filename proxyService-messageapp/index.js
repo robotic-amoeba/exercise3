@@ -17,8 +17,8 @@ const messaging = require('./routes/messaging');
 app.use('/message', messaging);
 
 app.use(function (err, req, res, next) {
+  console.log("Error catched in middleware: ", err)
   if(err instanceof SyntaxError) {
-    console.log("Error catched in middleware: ", err)
     res.status(400).send("Error. Check the request format. (Sytax error)");
   } else {
     res.status(500).send("Server error");

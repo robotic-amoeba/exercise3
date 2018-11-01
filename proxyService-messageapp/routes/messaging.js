@@ -1,9 +1,9 @@
 const express = require('express');
 const axios = require('axios');
-const router  = express.Router();
+const router = express.Router();
 const DBservice = require('../database-service/DBservice');
 
-router.post('/', function (req, res) {
+router.post('/', (req, res) => {
   const { destination, body } = req.body;
 
   if (!validateRequestParams(destination, body)) {
@@ -12,7 +12,7 @@ router.post('/', function (req, res) {
   }
 
   axios.post('http://messageapp:3000/message', {
-    destination,
+    destination,  
     body
   })
     .then((response) => {
@@ -25,6 +25,14 @@ router.post('/', function (req, res) {
       DBservice.saveMessage(destination, body, "Error when trying to send the message");
     });
 });
+
+router.get('/', (req, res, next) => {
+  DBservice.getMessages()
+  .then((messages)=>{
+    res.status(200).send(messages)
+  })
+  .catch(next)
+})
 
 
 function validateRequestParams(destination, body) {

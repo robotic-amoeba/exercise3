@@ -20,7 +20,11 @@ class _DBservice {
       body,
       status
     })
-    .then((data)=>console.log(data));
+      .then((data) => console.log(data));
+  }
+
+  getMessages() {
+    return Message.find()
   }
 }
 
