@@ -17,21 +17,26 @@ format and a 200 status.
 
 When the request fails, the API will answer with a string and one of this errors messages:
 
-  -Server error. Check the request format. (Sytax error) || status 500
+  -Error. Check the request format. (Sytax error) || status 400
 
   You are probably not sending a valid JSON in the body of the post.
 
-  -Bad format: destination and message should be strings || status 500
+  -Bad format: destination and message should be strings || status 400
 
   Your body should include a JSON with the format shown in the previous point and
   the fields can not be left empty. Empty strings are not allowed either.
+
+  -Too many requests, please try again later. || status 429
+
+  Requests are limited to a certain amount. Namely, 100 requests every 15 minutes.
+  If you exceed over that limit, you will receive this message.
 
   -Server error when requesting the message service || status 500
 
   As you may know, this API works as a proxy of another service. If that messaging
   service fails, this error is sent.
 
-  -Too many requests, please try again later. || status 429
+  -Server error || status 500
 
-  Requests are limited to a certain amount. Namely, 100 requests every 15 minutes.
-  If you exceed over that limit, you will receive this message.
+  Something went wrong. This is a generic error emited by the server. No more details are provided.
+  
