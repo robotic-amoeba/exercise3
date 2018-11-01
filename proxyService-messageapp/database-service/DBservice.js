@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Message = require('./models/Message')
+const Message = require('./models/Message');
 
 class _DBservice {
 
@@ -9,7 +9,7 @@ class _DBservice {
         console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`);
       })
       .catch(err => {
-        console.error('Error connecting to mongo', err)
+        console.error('Error connecting to mongo', err);
       });
   }
 
@@ -20,6 +20,7 @@ class _DBservice {
       body,
       status
     })
+    .then((data)=>console.log(data));
   }
 }
 

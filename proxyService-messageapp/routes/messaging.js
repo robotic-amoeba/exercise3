@@ -1,13 +1,13 @@
 const express = require('express');
-const app = express();
 const axios = require('axios');
 const router  = express.Router();
+const DBservice = require('../database-service/DBservice');
 
 router.post('/', function (req, res) {
   const { destination, body } = req.body;
 
   if (!validateRequestParams(destination, body)) {
-    res.status(400).send("Bad format: destination and message should be strings")
+    res.status(400).send("Bad format: destination and message should be strings");
     return;
   }
 
@@ -16,13 +16,15 @@ router.post('/', function (req, res) {
     body
   })
     .then((response) => {
-      res.send(`${response.data}`)
+      res.send(`${response.data}`);
+      DBservice.saveMessage(destination, body, response.data);
     })
     .catch((e) => {
-      console.log("error in axios request")
-      res.status(500).send("Server error when requesting the message service")
-    })
-})
+      console.log("error in axios request");
+      res.status(500).send("Server error when requesting the message service");
+      DBservice.saveMessage(destination, body, "Error when trying to send the message");
+    });
+});
 
 
 function validateRequestParams(destination, body) {
