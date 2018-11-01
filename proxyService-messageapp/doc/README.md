@@ -31,10 +31,14 @@ When the request fails, the API will answer with a string and one of this errors
   Requests are limited to a certain amount. Namely, 100 requests every 15 minutes.
   If you exceed over that limit, you will receive this message.
 
-  -Server error when requesting the message service || status 500
+  -Error when requesting the message service || status 500
 
   As you may know, this API works as a proxy of another service. If that messaging
   service fails, this error is sent.
+
+  -Server timeout || status 500
+
+  The server took too long to answer. Even though, your request may had been handled correctly.
 
   -Server error || status 500
 

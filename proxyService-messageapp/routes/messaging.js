@@ -1,7 +1,13 @@
 const express = require('express');
-const axios = require('axios');
 const router = express.Router();
+const timeout = require('connect-timeout')
 const DBservice = require('../database-service/DBservice');
+const axios = require('axios');
+const messageAPP = axios.create({
+  baseURL: 'http://messageapp:3000',
+  timeout: 3000
+});
+
 
 router.post('/', (req, res) => {
   const { destination, body } = req.body;
@@ -11,29 +17,41 @@ router.post('/', (req, res) => {
     return;
   }
 
-  axios.post('http://messageapp:3000/message', {
-    destination,  
+  messageAPP.post('/message', {
+    destination,
     body
   })
     .then((response) => {
       res.send(`${response.data}`);
       DBservice.saveMessage(destination, body, response.data);
     })
-    .catch((e) => {
-      console.log("error in axios request");
-      res.status(500).send("Server error when requesting the message service");
-      DBservice.saveMessage(destination, body, "Error when trying to send the message");
+    .catch((error) => {
+      let customError;
+      if (error.response || error.request) {
+        customError = "Error in messageapp"
+        if (error.code && error.code === 'ECONNABORTED') {
+          customError = "Error in messageapp. Timeout"
+        }
+      } else {
+        customError = "Server error"
+      }
+      console.log(customError);
+      res.status(500).send(customError);
+      DBservice.saveMessage(destination, body, customError);
     });
 });
 
 router.get('/', (req, res, next) => {
   DBservice.getMessages()
-  .then((messages)=>{
-    res.status(200).send(messages)
-  })
-  .catch(next)
+    .then((messages) => {
+      res.status(200).send(messages)
+    })
+    .catch(next)
 })
 
+/* function handleTimeout(req, res, next) {
+  req.timedout ? res.status(500).send("Server timeout") : next(); 
+} */
 
 function validateRequestParams(destination, body) {
   if (!destination || !body) {
