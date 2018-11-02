@@ -13,7 +13,6 @@ class _DBservice {
       });
   }
 
-
   saveMessage(destination, body, status) {
     Message.create({
       destination,
